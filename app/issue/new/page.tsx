@@ -10,6 +10,8 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createIssueSchema } from '@/app/validationSchema';
 import { z } from 'zod';
+import ErrorMessage from '@/app/components/ErrorMessage';
+import Spinner from '@/app/components/Spinner';
 
 type IssueForm = z.infer<typeof createIssueSchema>; // 根据schema生成表单类型
 
@@ -18,31 +20,36 @@ const NewIssuePage = () => {
   const { register, handleSubmit, control, formState: { errors } } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema)
   });
-  console.log(errors)
   const [error, setError] = useState<string>();
   const router = useRouter();
+  const [loading, setLoading] = useState(false)
+  
+  const onSubmit = async (data: IssueForm) => {
+    try {
+      setLoading(true)
+      await axios.post('/api/issues', data)
+      router.push('/issue')
+    } catch (error: any) {
+      console.log(error)
+      setError(error?.response?.data?.message || 'Something went wrong');
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <div className='max-w-xl'>
-      <form className='space-y-4' onSubmit={handleSubmit(async (fileds) => {
-        try {
-          await axios.post('/api/issues', fileds)
-          router.push('/issue')
-        } catch (error: any) {
-          console.log(error)
-          setError(error?.response?.data?.message || 'Something went wrong');
-        }
-      })}>
+      <form className='space-y-4' onSubmit={handleSubmit(onSubmit)}>
         <TextField.Root >
           <TextField.Input placeholder="Add issues ..." {...register('title')} />
         </TextField.Root>
-        {errors.title && <Text color='red' as='p'>{errors.title.message}</Text>}
+        <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
           control={control}
           name="description"
           render={({ field }) => <SimpleMDE spellCheck={false} placeholder='add description ...' {...field} />}
         />
-          {errors.description && <Text color='red' as='p'>{errors.description.message}</Text>}
-        <Button>New Issue</Button>
+          <ErrorMessage>{errors.description?.message}</ErrorMessage>
+        <Button disabled={loading}>New Issue {loading && <Spinner />}</Button>
       </form>
       {error &&
         <Callout.Root size="2" color='red' className='mt-5'>
