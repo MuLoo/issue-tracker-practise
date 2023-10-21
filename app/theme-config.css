@@ -1,0 +1,4 @@
+.radix-themes {
+  /* 按照radix-ui/theme 文档配置 font-family 不起作用。 临时解决。 https://github.com/radix-ui/themes/issues/117 */
+  --default-font-family: var(--font-inter) !important;
+}
