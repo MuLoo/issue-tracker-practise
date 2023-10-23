@@ -12,6 +12,7 @@ import { createIssueSchema } from '@/app/validationSchema';
 import { z } from 'zod';
 import ErrorMessage from '@/app/components/ErrorMessage';
 import Spinner from '@/app/components/Spinner';
+import delay from 'delay';
 
 type IssueForm = z.infer<typeof createIssueSchema>; // 根据schema生成表单类型
 
@@ -23,7 +24,7 @@ const NewIssuePage = () => {
   const [error, setError] = useState<string>();
   const router = useRouter();
   const [loading, setLoading] = useState(false)
-  
+
   const onSubmit = async (data: IssueForm) => {
     try {
       setLoading(true)

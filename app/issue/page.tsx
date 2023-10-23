@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Table } from '@radix-ui/themes'
-import Link from 'next/link'
+import Link from '@/app/components/Link'
 import prisma from '@/prisma/client'
 import IssueStatusBadge from '../components/IssueStatusBadge'
 import delay from 'delay'
@@ -9,7 +9,7 @@ import IssueAction from './IssueAction'
 // 服务端组件，可以直接使用prisma
 const IssuePage = async () => {
   const issues = await prisma.issues.findMany()
-  await delay(2000)
+  await delay(1000)
   return (
     <div>
       <IssueAction />
@@ -25,9 +25,7 @@ const IssuePage = async () => {
           {issues.map((issue) => (
             <Table.Row key={issue.id}>
               <Table.Cell>
-                <Link href={`/issue/${issue.id}`}>
-                  {issue.title}
-                </Link>
+                <Link href={`/issue/${issue.id}`} label={issue.title} />
                 <div className='block md:hidden'>{issue.status}</div>
               </Table.Cell>
               <Table.Cell className='hidden md:table-cell'><IssueStatusBadge status={issue.status} /></Table.Cell>

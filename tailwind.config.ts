@@ -16,7 +16,7 @@ const config: Config = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'),
+    require('@tailwindcss/typography'), // 可以为 HTML 提供精美的排版默认设置，比如从markdown渲染而来的html
   ],
 }
 export default config
