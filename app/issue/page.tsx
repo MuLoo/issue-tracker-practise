@@ -3,15 +3,16 @@ import { Button, Table } from '@radix-ui/themes'
 import Link from 'next/link'
 import prisma from '@/prisma/client'
 import IssueStatusBadge from '../components/IssueStatusBadge'
+import delay from 'delay'
+import IssueAction from './IssueAction'
 
 // 服务端组件，可以直接使用prisma
 const IssuePage = async () => {
   const issues = await prisma.issues.findMany()
+  await delay(2000)
   return (
     <div>
-      <Button>
-        <Link href="/issue/new">Add Issues</Link>
-      </Button>
+      <IssueAction />
       <Table.Root variant='surface' className='mt-5'>
         <Table.Header>
           <Table.Row>
@@ -24,7 +25,9 @@ const IssuePage = async () => {
           {issues.map((issue) => (
             <Table.Row key={issue.id}>
               <Table.Cell>
-                {issue.title}
+                <Link href={`/issue/${issue.id}`}>
+                  {issue.title}
+                </Link>
                 <div className='block md:hidden'>{issue.status}</div>
               </Table.Cell>
               <Table.Cell className='hidden md:table-cell'><IssueStatusBadge status={issue.status} /></Table.Cell>
