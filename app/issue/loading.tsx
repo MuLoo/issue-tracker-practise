@@ -1,8 +1,7 @@
 import { Table } from '@radix-ui/themes';
 import Link from 'next/link';
 import React from 'react'
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import Skeleton from '@/app/components/Skeleton';
 import IssueStatusBadge from '../components/IssueStatusBadge';
 import IssueAction from './IssueAction';
 

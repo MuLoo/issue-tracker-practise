@@ -9,7 +9,7 @@ import IssueAction from './IssueAction'
 // 服务端组件，可以直接使用prisma
 const IssuePage = async () => {
   const issues = await prisma.issues.findMany()
-  await delay(1000)
+  await delay(500)
   return (
     <div>
       <IssueAction />

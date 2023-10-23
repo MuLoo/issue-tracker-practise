@@ -1,10 +1,10 @@
-import IssueStatusBadge from '@/app/components/IssueStatusBadge'
+// 单一职责原则：一个文件只做一件事
 import prisma from '@/prisma/client'
-import { Card, Flex, Heading } from '@radix-ui/themes'
+import { Box, Grid } from '@radix-ui/themes'
 import delay from 'delay'
 import { notFound } from 'next/navigation'
-import React from 'react'
-import ReactMarkdown from 'react-markdown'
+import EditIssueButton from './EditIssueButton'
+import IssueDetail from './IssueDetail'
 interface Props {
   params: {
     id: string
@@ -18,28 +18,18 @@ const IssueDetailPage = async ({ params: { id } }: Props) => {
       id: Number(id)
     }
   })
-  await delay(1000)
+  await delay(500)
   if (!issue) notFound(); // 这里不需要return，因为notFound会抛出异常
-  console.log(issue)
-  const {
-    title,
-    description,
-    status,
-    createdAt,
-    updatedAt
-  } = issue;
-  
+
   return (
-    <div>
-      <Heading>Issue Detail</Heading>
-      <Flex gap="3" my="3">
-        <IssueStatusBadge status={status} />
-        <p>{createdAt.toDateString()}</p>
-      </Flex>
-      <Card className='prose' mt="6">
-        <ReactMarkdown>{description}</ReactMarkdown>
-        </Card>
-    </div>
+    <Grid columns={{ initial: '1', sm: '2'}} gap="5">
+      <Box>
+        <IssueDetail {...issue} />
+      </Box>
+      <Box>
+        <EditIssueButton id={id} />
+      </Box>
+      </Grid>
   )
 }
 
