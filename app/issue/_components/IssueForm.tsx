@@ -34,8 +34,12 @@ const IssueForm = ({ issue }: { issue?: Issues}) => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       setLoading(true)
-      await axios.post('/api/issues', data)
+      if (issue)
+        await axios.patch(`/api/issues/${issue.id}`, data)
+      else
+        await axios.post('/api/issues', data)
       router.push('/issue')
+      router.refresh() // 重新加载页面，获取最新的内容
     } catch (error: any) {
       console.log(error)
       setError(error?.response?.data?.message || 'Something went wrong');
@@ -59,7 +63,7 @@ const IssueForm = ({ issue }: { issue?: Issues}) => {
           )}
         />
           <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button disabled={loading}>New Issue {loading && <Spinner />}</Button>
+        <Button disabled={loading}>{issue ? 'Update' : 'New'} Issue {loading && <Spinner />}</Button>
       </form>
       {error &&
         <Callout.Root size="2" color='red' className='mt-5'>

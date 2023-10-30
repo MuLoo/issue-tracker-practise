@@ -10,7 +10,7 @@ interface Props {
     id: string
   }
 }
-
+// 拥有参数的 route，被视为dynamic routes
 const IssueDetailPage = async ({ params: { id } }: Props) => {
   if (isNaN(Number(id))) notFound();
   const issue = await  prisma.issues.findUnique({

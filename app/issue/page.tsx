@@ -38,4 +38,6 @@ const IssuePage = async () => {
   )
 }
 
+export const dynamic = 'force-dynamic' // 通过此设置不再 static rendering
+// export const revalidate = 60 // 通过此设置revalidate时间，单位秒
 export default IssuePage
