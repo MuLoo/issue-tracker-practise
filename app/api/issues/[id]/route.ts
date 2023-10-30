@@ -3,6 +3,13 @@ import { issueSchema } from '../../../validationSchema';
 import { z } from "zod";
 import prisma from "@/prisma/client";
 
+
+/**
+ * Updates an issue with the given ID.
+ * @param req - The NextRequest object.
+ * @param params - An object containing the ID of the issue to update.
+ * @returns A NextResponse object containing the updated issue or an error message.
+ */
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   if (isNaN(Number(params.id))) return NextResponse.json({ error: 'not valid id'}, { status: 400 })
   const body = await req.json();
@@ -24,4 +31,26 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
   })
   return NextResponse.json(updatedIssue, { status: 200 })
+}
+
+/**
+ * Deletes an issue with the given ID.
+ * @param req - The Next.js request object.
+ * @param params - An object containing the ID of the issue to delete.
+ * @returns A JSON response indicating success or failure.
+ */
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  if (isNaN(Number(params.id))) return NextResponse.json({ error: 'not valid id' }, { status: 400 })
+  const issue = await prisma.issues.findUnique({
+    where: {
+      id: Number(params.id)
+    }
+  })
+  if (!issue) return NextResponse.json({ error: 'issue not exist' }, { status: 400 })
+  await prisma.issues.delete({
+    where: {
+      id: issue.id
+    }
+  })
+  return NextResponse.json({ message: 'ok'}, { status: 200 })
 }
