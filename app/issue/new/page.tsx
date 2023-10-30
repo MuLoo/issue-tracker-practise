@@ -1,9 +1,10 @@
+import React from 'react'
 import dynamic from 'next/dynamic'
 import IssueFormSkeletion from '../_components/IssueFormSkeletion'
 
 const IssueForm = dynamic(() => import('../_components/IssueForm'), {
 	ssr: false,
-	loading: () => <IssueFormSkeletion />,
+	loading: () => <IssueFormSkeletion />
 })
 
 const NewIssuePage = () => {
