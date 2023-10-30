@@ -1,10 +1,11 @@
 // 单一职责原则：一个文件只做一件事
 import prisma from '@/prisma/client'
-import { Box, Grid } from '@radix-ui/themes'
+import { Box, Flex, Grid } from '@radix-ui/themes'
 import delay from 'delay'
 import { notFound } from 'next/navigation'
 import EditIssueButton from './EditIssueButton'
 import IssueDetail from './IssueDetail'
+import DeleteIssueButton from './DeleteIssueButton'
 interface Props {
   params: {
     id: string
@@ -22,13 +23,15 @@ const IssueDetailPage = async ({ params: { id } }: Props) => {
   if (!issue) notFound(); // 这里不需要return，因为notFound会抛出异常
 
   return (
-    <Grid columns={{ initial: '1', sm: '2'}} gap="5">
-      <Box>
+    // radix-ui 的 sm ，相当于 tailwindcss 的 md，这二者的 breakpoint 是不一致的
+    <Grid columns={{ initial: '1', sm: '5'}} gap="5">
+      <Box className='md:col-span-4'>
         <IssueDetail {...issue} />
       </Box>
-      <Box>
-        <EditIssueButton id={id} />
-      </Box>
+        <Flex gap="4" direction="column">
+          <EditIssueButton id={id} />
+          <DeleteIssueButton id={id} />
+          </Flex>
       </Grid>
   )
 }

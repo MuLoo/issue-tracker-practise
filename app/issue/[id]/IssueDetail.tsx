@@ -13,11 +13,11 @@ const IssueDetail = (props: Issues) => {
   return (
     <>
       <Heading>Issue Detail</Heading>
-        <Flex gap="3" my="3">
+        <Flex className='space-x-3' my="2">
           <IssueStatusBadge status={status} />
           <p>{createdAt.toDateString()}</p>
         </Flex>
-        <Card className='prose' mt="6">
+        <Card className='prose max-w-full' mt="4">
           <ReactMarkdown>{description}</ReactMarkdown>
           </Card>
     </>
