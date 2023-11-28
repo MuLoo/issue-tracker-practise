@@ -6,10 +6,9 @@ import { usePathname } from 'next/navigation'
 import cls from 'classnames'
 import { useSession } from 'next-auth/react'
 import { Avatar, Box, Container, DropdownMenu, Flex, Text } from '@radix-ui/themes'
-
+import Skeleton from './components/Skeleton'
 const Navbar = () => {
 	const pathname = usePathname()
-	const { status, data: session } = useSession()
 	const links = [
 		{
 			label: 'Dashboard',
@@ -20,6 +19,7 @@ const Navbar = () => {
 			link: '/issue/list'
 		}
 	]
+
 	return (
 		<nav className="border-b mb-5 px-5 h-14 py-3">
 			<Container>
@@ -33,8 +33,8 @@ const Navbar = () => {
 								<li key={item.link}>
 									<Link
 										href={item.link}
-										className={cls('text-zinc-500 hover:text-zinc-800 transition-colors', {
-											'text-blue-500': pathname === item.link
+										className={cls('nav-link', {
+											'!text-blue-500': pathname === item.link
 										})}>
 										{item.label}
 									</Link>
@@ -42,33 +42,45 @@ const Navbar = () => {
 							))}
 						</ul>
 					</Flex>
-					<Box>
-						{status === 'authenticated' && (
-							<DropdownMenu.Root>
-								<DropdownMenu.Trigger>
-									<Avatar
-										src={session?.user?.image ?? ''}
-										fallback="?"
-										size="2"
-										radius="full"
-										className="cursor-pointer"
-									/>
-								</DropdownMenu.Trigger>
-								<DropdownMenu.Content align="end">
-									<DropdownMenu.Label>
-										<Text size="2">{session?.user?.email}</Text>
-									</DropdownMenu.Label>
-									<DropdownMenu.Item>
-										<Link href="/api/auth/signout">Sign Out</Link>
-									</DropdownMenu.Item>
-								</DropdownMenu.Content>
-							</DropdownMenu.Root>
-						)}
-						{status === 'unauthenticated' && <Link href="/api/auth/signin">Sign In</Link>}
-					</Box>
+					<AvatarDropdown />
 				</Flex>
 			</Container>
 		</nav>
+	)
+}
+
+const AvatarDropdown = () => {
+	const { status, data: session } = useSession()
+	if (status === 'loading') return <Skeleton width="3rem" />
+	if (status === 'unauthenticated') return <Link href="/api/auth/signin">Sign In</Link>
+
+	return (
+		<Box>
+			{status === 'authenticated' && (
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger>
+						<Avatar
+							src={session?.user?.image ?? ''}
+							fallback="?"
+							size="2"
+							radius="full"
+							className="cursor-pointer"
+							referrerPolicy="no-referrer"
+						/>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content align="end">
+						<DropdownMenu.Label>
+							<Text size="2">{session?.user?.email}</Text>
+						</DropdownMenu.Label>
+						<DropdownMenu.Item>
+							<Link className="nav-link" href="/api/auth/signout">
+								Sign Out
+							</Link>
+						</DropdownMenu.Item>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
+			)}
+		</Box>
 	)
 }
 

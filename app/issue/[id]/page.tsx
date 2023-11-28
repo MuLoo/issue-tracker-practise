@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation'
 import EditIssueButton from './EditIssueButton'
 import IssueDetail from './IssueDetail'
 import DeleteIssueButton from './DeleteIssueButton'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/authOptions'
 interface Props {
 	params: {
 		id: string
@@ -12,6 +14,7 @@ interface Props {
 }
 // 拥有参数的 route，被视为dynamic routes
 const IssueDetailPage = async ({ params: { id } }: Props) => {
+	const sessions = await getServerSession(authOptions)
 	if (isNaN(Number(id))) notFound()
 	const issue = await prisma.issues.findUnique({
 		where: {
@@ -26,10 +29,12 @@ const IssueDetailPage = async ({ params: { id } }: Props) => {
 			<Box className="md:col-span-4">
 				<IssueDetail {...issue} />
 			</Box>
-			<Flex gap="4" direction="column">
-				<EditIssueButton id={id} />
-				<DeleteIssueButton id={id} />
-			</Flex>
+			{sessions && (
+				<Flex gap="4" direction="column">
+					<EditIssueButton id={id} />
+					<DeleteIssueButton id={id} />
+				</Flex>
+			)}
 		</Grid>
 	)
 }

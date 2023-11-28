@@ -1,6 +1,8 @@
 import prisma from '@/prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
 import { issueSchema } from '../../../validationSchema'
+import authOptions from '../../auth/authOptions'
+import { getServerSession } from 'next-auth'
 
 /**
  * Updates an issue with the given ID.
@@ -9,6 +11,8 @@ import { issueSchema } from '../../../validationSchema'
  * @returns A NextResponse object containing the updated issue or an error message.
  */
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+	const session = await getServerSession(authOptions)
+	if (!session) return NextResponse.json({ error: 'not authenticated' }, { status: 401 })
 	if (isNaN(Number(params.id))) return NextResponse.json({ error: 'not valid id' }, { status: 400 })
 	const body = await req.json()
 	const validation = issueSchema.safeParse(body)
@@ -38,6 +42,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
  * @returns A JSON response indicating success or failure.
  */
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+	const session = await getServerSession(authOptions)
+	if (!session) return NextResponse.json({ error: 'not authenticated' }, { status: 401 })
 	if (isNaN(Number(params.id))) return NextResponse.json({ error: 'not valid id' }, { status: 400 })
 	const issue = await prisma.issues.findUnique({
 		where: {
