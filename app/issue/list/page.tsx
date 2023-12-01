@@ -5,9 +5,16 @@ import { Flex, Table } from '@radix-ui/themes'
 import IssueStatusBadge from '../../components/IssueStatusBadge'
 import IssueAction from './IssueAction'
 import IssuleStatusFilter from './IssueStatusFilter'
+import { Status } from '@prisma/client'
 // 服务端组件，可以直接使用prisma
-const IssuePage = async () => {
-	const issues = await prisma.issues.findMany()
+const IssuePage = async ({ searchParams }: { searchParams: { status: Status } }) => {
+	const { status } = searchParams
+	const validStatus = Object.values(Status)
+	const issues = await prisma.issues.findMany({
+		where: {
+			status: validStatus.includes(status) ? status : undefined
+		}
+	})
 	return (
 		<div>
 			<Flex justify="between">
