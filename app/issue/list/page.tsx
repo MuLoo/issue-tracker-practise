@@ -5,15 +5,41 @@ import { Flex, Table } from '@radix-ui/themes'
 import IssueStatusBadge from '../../components/IssueStatusBadge'
 import IssueAction from './IssueAction'
 import IssuleStatusFilter from './IssueStatusFilter'
-import { Status } from '@prisma/client'
+import { Issues, Status } from '@prisma/client'
+import NextLink from 'next/link'
+import { ArrowDownIcon, ArrowUpIcon } from '@radix-ui/react-icons'
+//
+const columns: { label: string; value: keyof Issues; className?: string }[] = [
+	{
+		label: 'Issue',
+		value: 'title',
+		className: ''
+	},
+	{
+		label: 'Status',
+		value: 'status',
+		className: 'hidden md:table-cell'
+	},
+	{
+		label: 'CreatedAt',
+		value: 'createdAt',
+		className: 'hidden md:table-cell'
+	}
+]
 // 服务端组件，可以直接使用prisma
-const IssuePage = async ({ searchParams }: { searchParams: { status: Status } }) => {
-	const { status } = searchParams
+const IssuePage = async ({
+	searchParams
+}: {
+	searchParams: { status: Status; orderBy: keyof Issues; sort: 'asc' | 'desc' }
+}) => {
+	const { status, orderBy = 'createdAt', sort = 'desc' } = searchParams
 	const validStatus = Object.values(Status)
+	const orderByObj = columns.map(item => item.value).includes(orderBy) ? { [orderBy]: 'asc' } : undefined
 	const issues = await prisma.issues.findMany({
 		where: {
 			status: validStatus.includes(status) ? status : undefined
-		}
+		},
+		orderBy: orderByObj
 	})
 	return (
 		<div>
@@ -24,9 +50,22 @@ const IssuePage = async ({ searchParams }: { searchParams: { status: Status } })
 			<Table.Root variant="surface" className="mt-5">
 				<Table.Header>
 					<Table.Row>
-						<Table.ColumnHeaderCell>Issue</Table.ColumnHeaderCell>
-						<Table.ColumnHeaderCell className="hidden md:table-cell">Status</Table.ColumnHeaderCell>
-						<Table.ColumnHeaderCell className="hidden md:table-cell">CreatedAt</Table.ColumnHeaderCell>
+						{columns.map(column => (
+							<Table.ColumnHeaderCell className={column.className} key={column.value}>
+								<NextLink
+									href={{
+										query: {
+											...searchParams,
+											orderBy: column.value,
+											sort: searchParams.sort === 'asc' ? 'desc' : 'asc'
+										}
+									}}>
+									{column.label}
+								</NextLink>
+								{orderBy === column.value &&
+									(sort === 'desc' ? <ArrowDownIcon className="inline" /> : <ArrowUpIcon className="inline" />)}
+							</Table.ColumnHeaderCell>
+						))}
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
@@ -39,7 +78,7 @@ const IssuePage = async ({ searchParams }: { searchParams: { status: Status } })
 							<Table.Cell className="hidden md:table-cell">
 								<IssueStatusBadge status={issue.status} />
 							</Table.Cell>
-							<Table.Cell className="hidden md:table-cell">{issue.createdAt.toDateString()}</Table.Cell>
+							<Table.Cell className="hidden md:table-cell">{issue.createdAt.toLocaleString()}</Table.Cell>
 						</Table.Row>
 					))}
 				</Table.Body>
