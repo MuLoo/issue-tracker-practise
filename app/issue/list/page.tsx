@@ -1,15 +1,19 @@
 import React from 'react'
 import Link from '@/app/components/Link'
 import prisma from '@/prisma/client'
-import { Table } from '@radix-ui/themes'
+import { Flex, Table } from '@radix-ui/themes'
 import IssueStatusBadge from '../../components/IssueStatusBadge'
 import IssueAction from './IssueAction'
+import IssuleStatusFilter from './IssueStatusFilter'
 // 服务端组件，可以直接使用prisma
 const IssuePage = async () => {
 	const issues = await prisma.issues.findMany()
 	return (
 		<div>
-			<IssueAction />
+			<Flex justify="between">
+				<IssuleStatusFilter />
+				<IssueAction />
+			</Flex>
 			<Table.Root variant="surface" className="mt-5">
 				<Table.Header>
 					<Table.Row>
