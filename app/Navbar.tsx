@@ -60,6 +60,7 @@ const AvatarDropdown = () => {
 				<DropdownMenu.Root>
 					<DropdownMenu.Trigger>
 						<Avatar
+							alt="avatar"
 							src={session?.user?.image ?? ''}
 							fallback="?"
 							size="2"
