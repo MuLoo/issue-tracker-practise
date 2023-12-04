@@ -62,7 +62,7 @@ const AvatarDropdown = () => {
 						<Avatar
 							alt="avatar"
 							src={session?.user?.image ?? ''}
-							fallback="?"
+							fallback="https://pic.yupoo.com/leisurenana/1b521ee8/e5a68c46.jpg"
 							size="2"
 							radius="full"
 							className="cursor-pointer"
