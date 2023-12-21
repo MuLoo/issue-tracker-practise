@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .statusCard {
+    @apply w-[190px] h-[190px] rounded-[44px] shadow-lg custom-shadow text-left relative overflow-hidden;
+    &::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+      background-size: 200% 200%;
+      transform: rotate(30deg);
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    &:hover::after {
+      opacity: 1;
+      animation: shine 1s;
+    }
+    .statusAvatar {
+      @apply w-[48px] h-[48px] inline-block mt-[30px] mr-[15px] mb-[15px] ml-[25px] bg-[rgba(255,255,255,0.9)] rounded-[14px];
+    }
+    
+    .statusCardInfo {
+      @apply inline-block align-top mt-[33px] w-[85px] text-left;
+      .statusCardInfo_1, .statusCardInfo_2 {
+        @apply inline-block h-[20px] w-full rounded-[6px] bg-[rgba(255,255,255,0.9)];
+      }
+      .statusCardInfo_2 {
+        @apply inline-block bg-[rgba(255,255,255,0.9)] h-[11px] w-1/2 rounded-[3px];
+      }
+    }
+    .statusCardContent_1 {
+      @apply w-4/5 rounded-[12px] bg-[rgba(255,255,255,0.9)] h-[40px] m-auto;
+    }
+    
+    .statusCardContent_2 {
+      @apply w-3/5 rounded-[6px] bg-[rgba(255,255,255,0.9)] h-[18px] mt-[10px] ml-[20px];
+    }
+  }
+
+  .custom-shadow {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+
+
+
+
+
+
+
+
+@keyframes shine {
+  to {
+    background-position: -200% 200%;
+  }
+}

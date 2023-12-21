@@ -61,8 +61,8 @@ const AvatarDropdown = () => {
 					<DropdownMenu.Trigger>
 						<Avatar
 							alt="avatar"
-							src={session?.user?.image ?? ''}
-							fallback="https://pic.yupoo.com/leisurenana/1b521ee8/e5a68c46.jpg"
+							src={session?.user?.image ?? 'https://pic.yupoo.com/leisurenana/1b521ee8/e5a68c46.jpg'}
+							fallback="U"
 							size="2"
 							radius="full"
 							className="cursor-pointer"
